@@ -16,7 +16,6 @@ import org.jumpmind.pos.persist.PersistException;
 import org.jumpmind.pos.persist.Query;
 import org.jumpmind.pos.persist.SqlStatement;
 import org.jumpmind.pos.util.model.AbstractTypeCode;
-import org.springframework.util.Assert;
 
 public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
 
@@ -61,16 +60,18 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
         this.orderBy = orderBy;
     }
 
-    public boolean hasOrderBy()  { return (this.orderBy != null); }
+    public boolean hasOrderBy() {
+        return (this.orderBy != null);
+    }
 
     public QueryTemplate copy() {
         try {
-            return (QueryTemplate)this.clone();
+            return (QueryTemplate) this.clone();
         } catch (CloneNotSupportedException e) {
             throw new PersistException(e);
         }
     }
-    
+
     public SqlStatement generateSQL(Query<?> query, Object singleParam) {
         Map<String, Object> params = new HashMap<>();
         params.put("*", singleParam);
@@ -152,9 +153,9 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
                 buff.append(")");
                 keys.addAll(optionalWhereClauseKeys);
             }
-            
+
             if (shouldInclude) {
-               firstIncluded = false;
+                firstIncluded = false;
             }
         }
 
@@ -188,11 +189,11 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
                             String.format("Missing required query parameter '%s'. Cannot build query: %s", key, sqlStatement.getSql()));
                 }
             } else if (value instanceof Boolean) {
-                boolean bool = (Boolean)value;
+                boolean bool = (Boolean) value;
                 value = bool ? 1 : 0;
                 params.put(key, value);
             } else if (value instanceof AbstractTypeCode) {
-                value = ((AbstractTypeCode)value).value();
+                value = ((AbstractTypeCode) value).value();
                 params.put(key, value);
             }
         }
@@ -215,7 +216,6 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
         }
     }
 
-
     private Map<String, Object> splitInClause(Map.Entry<String, Object> entry, StringBuilder buffer, Query<?> query) {
         Map<String, Object> newParams = new HashMap<>();
         Pattern pattern = Pattern.compile("([\\w.$*@]+\\s+(not\\s+)?in\\s*\\(\\s*)(:" + Pattern.quote(entry.getKey()) + ")(\\s*\\))", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -229,8 +229,7 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
                 if (indexEntry.getKey() > 0) {
                     if (matcher.group(2) != null) {
                         replacement.append(" AND ");
-                    }
-                    else {
+                    } else {
                         replacement.append(" OR ");
                     }
                 }
@@ -240,7 +239,7 @@ public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
                     replacement.append(matcher.group(3)).append("$").append(parameterIndex);
 
                     newParams.put(entry.getKey() + "$" + parameterIndex, entries.get(i));
-                    if(i != entries.size() - 1) {
+                    if (i != entries.size() - 1) {
                         replacement.append(",");
                     }
                     parameterIndex++;
