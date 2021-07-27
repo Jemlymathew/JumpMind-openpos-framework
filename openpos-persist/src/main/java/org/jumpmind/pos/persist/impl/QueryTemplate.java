@@ -18,45 +18,23 @@ import org.jumpmind.pos.persist.SqlStatement;
 import org.jumpmind.pos.util.model.AbstractTypeCode;
 import org.springframework.util.Assert;
 
-public class QueryTemplate implements Cloneable {
+public class QueryTemplate extends AbstractSqlTemplate implements Cloneable {
 
-    private String name;
     private String select;
-    private List<String> optionalWhereClauses;
     private String groupBy;
-    private String where;
     private String orderBy;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public void setSelect(String select) {
         this.select = select;
     }
-    
+
     public String getSelect() {
         return select;
     }
 
-    public boolean hasSelect()  { return (this.select != null); }
-
-    public List<String> getOptionalWhereClauses() {
-        if (optionalWhereClauses == null) {
-            optionalWhereClauses = new ArrayList<>();
-        }
-        return optionalWhereClauses;
+    public boolean hasSelect() {
+        return (this.select != null);
     }
-
-    public void setOptionalWhereClauses(List<String> optionalWhereClauses) {
-        this.optionalWhereClauses = optionalWhereClauses;
-    }
-
-    public boolean hasOptionalWhereClauses()  { return !getOptionalWhereClauses().isEmpty(); }
 
     public QueryTemplate optionalWhere(String optionalWhere) {
         this.getOptionalWhereClauses().add(optionalWhere);
@@ -71,17 +49,9 @@ public class QueryTemplate implements Cloneable {
         this.groupBy = groupBy;
     }
 
-    public boolean hasGroupBy()  { return (this.groupBy != null); }
-
-    public String getWhere() {
-        return where;
+    public boolean hasGroupBy() {
+        return (this.groupBy != null);
     }
-
-    public void setWhere(String where) {
-        this.where = where;
-    }
-
-    public boolean hasWhere()  { return (this.where != null); }
 
     public String getOrderBy() {
         return orderBy;
@@ -111,7 +81,7 @@ public class QueryTemplate implements Cloneable {
         String select = this.getSelect();
         List<String> keys = new ArrayList<>();
 
-        StringSubstitutor literalSubtitution = new StringSubstitutor(new StringLookup() {
+        StringSubstitutor literalSubstitution = new StringSubstitutor(new StringLookup() {
             @Override
             public String lookup(String key) {
                 Object paramValue = params.get(key);
@@ -127,10 +97,10 @@ public class QueryTemplate implements Cloneable {
             }
         });
 
-        String preppedSelectClause = literalSubtitution.replace(select);
+        String preppedSelectClause = literalSubstitution.replace(select);
         preppedSelectClause = sub.replace(preppedSelectClause);
 
-        String preppedWhereClause = literalSubtitution.replace(this.getWhere());
+        String preppedWhereClause = literalSubstitution.replace(this.getWhere());
         preppedWhereClause = sub.replace(preppedWhereClause);
 
         StringBuilder buff = new StringBuilder();
@@ -148,7 +118,7 @@ public class QueryTemplate implements Cloneable {
         boolean firstIncluded = true;
         for (String optionalWhereClause : this.getOptionalWhereClauses()) {
             Set<String> optionalWhereClauseKeys = new LinkedHashSet<>();
-            String preppedOptionalWhereClause = literalSubtitution.replace(optionalWhereClause);
+            String preppedOptionalWhereClause = literalSubstitution.replace(optionalWhereClause);
 
             StringSubstitutor optionalSubstitution = new StringSubstitutor(new StringLookup() {
                 @Override
@@ -231,16 +201,6 @@ public class QueryTemplate implements Cloneable {
         }
         sqlStatement.setParameters(params);
         return sqlStatement;
-    }
-
-    protected String stripWhere(String preppedSelectClause) {
-        Assert.notNull(preppedSelectClause, "preppedSelectClause must be non-null.");
-        String sqlTrimmed = preppedSelectClause.trim();
-        if (sqlTrimmed.endsWith("WHERE") || sqlTrimmed.endsWith("where")) {
-            return sqlTrimmed.substring(0, sqlTrimmed.length() - "where".length());
-        } else {
-            return sqlTrimmed;
-        }
     }
 
     private void splitTooManyValuesInClause(Query<?> query, Map<String, Object> params, StringBuilder buffer) {
