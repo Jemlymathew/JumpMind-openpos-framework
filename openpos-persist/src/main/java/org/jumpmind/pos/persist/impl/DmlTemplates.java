@@ -68,12 +68,24 @@ public class DmlTemplates extends AbstractSqlTemplates {
 
                     if (validateTablesInQueries) {
                         scanSqlTextForLiteralTableName(template.getDml(), "", template.getName(), regularTableName, shadowTableName, dbSchema.getTablePrefix(), modelClassName);
+                        scanSqlTextForLiteralTableName(template.getWhere(), "WHERE", template.getName(), regularTableName, shadowTableName, dbSchema.getTablePrefix(), modelClassName);
+                        for (String optionalWhereClause : template.getOptionalWhereClauses()) {
+                            scanSqlTextForLiteralTableName(optionalWhereClause, "optional WHERE clause", template.getName(), regularTableName, shadowTableName, dbSchema.getTablePrefix(), modelClassName);
+                        }
                     }
 
                     //  In the case below, we always want the model class, NOT its superclass.
                     String tableName = (deviceMode.equals("training") ? shadowTableName : regularTableName);
 
                     template.setDml(replaceClassModelNameInSqlText(template.getDml(), modelClassName, tableName));
+                    template.setWhere(replaceClassModelNameInSqlText(template.getWhere(), modelClassName, tableName));
+                    if (template.hasOptionalWhereClauses()) {
+                        ArrayList<String> newOptionalWhereClauses = new ArrayList<>();
+                        for (String optionalWhereClause : template.getOptionalWhereClauses()) {
+                            newOptionalWhereClauses.add(replaceClassModelNameInSqlText(optionalWhereClause, modelClassName, tableName));
+                        }
+                        template.setOptionalWhereClauses(newOptionalWhereClauses);
+                    }
                 }
             }
         }
