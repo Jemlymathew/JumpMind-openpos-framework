@@ -1,4 +1,5 @@
 @import '../../../styles/mixins/typography';
+@import "../../../styles/variables/spacing";
 
 .header {
   .context-box{
@@ -6,7 +7,6 @@
     grid-template-columns: auto auto;
     padding:8px;
     border-radius: 4px;
-    margin-right: 8px;
 
     .screen-icon{
       margin-right: 8px;
@@ -14,6 +14,11 @@
   }
   .header-text{
     align-self: center;
+    margin-left: 8px;
+  }
+
+  .secondary-buttons-section {
+    margin-top: $med-space;
   }
 
   &.mobile {

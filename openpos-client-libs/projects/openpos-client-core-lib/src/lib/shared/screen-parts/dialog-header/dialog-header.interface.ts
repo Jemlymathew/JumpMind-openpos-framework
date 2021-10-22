@@ -18,4 +18,10 @@ export interface DialogHeaderInterface {
      *  [action-item.interface.ts](../../../core/interfaces/action-item.interface.ts)
      */
     backButton: IActionItem;
+
+    /**
+     * Shows secondary buttons (if exists) in the top left corner of the dialog.
+     * [action-item.interface.ts](../../../core/interfaces/action-item.interface.ts)
+     */
+    secondaryButtons: IActionItem[];
 }

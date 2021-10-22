@@ -7,6 +7,16 @@
             <span class="context-text">{{screenData.headerContextText}}</span>
         </div>
         <span class="header-text">{{screenData.headerText}}</span>
+        <div class="secondary-buttons-section" *ngIf="screenData.secondaryButtons && screenData.secondaryButtons.length > 0">
+            <app-secondary-button
+                    responsive-class
+                    *ngFor="let m of screenData.secondaryButtons; let i = index"
+                    [id]="'button-' + i"
+                    (click)="doAction(m)"
+                    [actionItem]="m">
+                {{m.title}}
+            </app-secondary-button>
+        </div>
     </div>
     <app-icon-button 
         class="back-button" 

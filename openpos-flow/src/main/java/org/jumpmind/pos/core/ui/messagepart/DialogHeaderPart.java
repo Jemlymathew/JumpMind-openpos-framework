@@ -5,6 +5,8 @@ import org.jumpmind.pos.core.ui.ActionItem;
 import org.jumpmind.pos.core.ui.IHasBackButton;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class DialogHeaderPart implements IHasBackButton, Serializable {
@@ -15,6 +17,7 @@ public class DialogHeaderPart implements IHasBackButton, Serializable {
     private String headerContextStyle;
     private String headerContextText;
     private ActionItem backButton;
+    private List<ActionItem> secondaryButtons = new ArrayList<>();
 
     public DialogHeaderPart() {
     }
