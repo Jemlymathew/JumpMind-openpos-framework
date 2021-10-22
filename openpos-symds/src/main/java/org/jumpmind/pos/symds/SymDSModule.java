@@ -33,6 +33,7 @@ import org.jumpmind.util.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
@@ -69,6 +70,9 @@ public class SymDSModule extends AbstractRDBMSModule {
 
     @Autowired(required = false)
     List<IDataSyncListener> dataSyncListeners;
+
+    @Autowired
+    CacheEvictionConfig cacheEvictionConfig;
 
     @Override
     public void initialize() {
@@ -109,6 +113,74 @@ public class SymDSModule extends AbstractRDBMSModule {
 
         super.initialize();
 
+    }
+
+    private void addConfiguredCacheEviction() {
+        serverEngine.getExtensionService().addExtensionPoint(new DatabaseWriterFilterAdapter() {
+            @Override
+            public void batchCommitted(DataContext context) {
+                Batch batch = context.getBatch();
+                try {
+                    if (CHANNEL_RELOAD.equals(batch.getChannelId())) {
+                        Collection<String> names = cacheManager.getCacheNames();
+                        for (String name : names) {
+                            cacheManager.getCache(name).clear();
+                        }
+                    } else {
+                        if (cacheEvictionConfig != null) {
+                            processCacheEvictionForTables(context);
+                            processCacheEvictionForChannels(context);
+                        }
+                    }
+                } catch (Exception e) {
+                    //we never want to hold up sync due to any issues with cache expiration
+                    log.warn("Error clearing cache on SymDS sync",e);
+                }
+            }
+
+            @Override
+            public void afterWrite(DataContext context, Table table, CsvData data) {
+                processDataSyncListeners(context, table, data);
+            }
+        });
+    }
+
+    protected void processCacheEvictionForTables(DataContext context) throws Exception {
+        Map<String, List<String>> tables = cacheEvictionConfig.getTables();
+        if (tables != null) {
+            Map<String, Table> batchTables = context.getParsedTables();
+            for (Map.Entry<String, Table> entry : batchTables.entrySet()) {
+                if (entry.getValue() != null) {
+                    processCacheEvictions(tables.get(entry.getValue().getName()));
+                }
+            }
+        } else {
+            log.info("No tables defined for cacheEvictionConfig");
+        }
+    }
+
+    protected void processCacheEvictionForChannels(DataContext context) throws Exception {
+        Map<String, List<String>> channels = cacheEvictionConfig.getChannels();
+        if (channels != null) {
+            String batchChannel = context.getBatch().getChannelId();
+            processCacheEvictions(channels.get(batchChannel));
+        } else {
+            log.info("No channels defined for cacheEvictionConfig");
+        }
+    }
+
+    protected void processCacheEvictions(List<String> evictionCacheNames) throws Exception {
+        if (evictionCacheNames != null && !evictionCacheNames.isEmpty()) {
+            for (String evictionCacheName:evictionCacheNames) {
+                Cache cache = cacheManager.getCache(evictionCacheName);
+                if (cache != null) {
+                    log.info(String.format("Clearing cache %s", evictionCacheName));
+                    cache.clear();
+                } else {
+                    log.warn(String.format("Configured cache %s not found in active caches", evictionCacheName));
+                }
+            }
+        }
     }
 
     protected void processDataSyncListeners(DataContext context, Table table, CsvData data) {
