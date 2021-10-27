@@ -59,6 +59,7 @@ pipeline {
                 withSonarQubeEnv('JumpMindCloud') {
                     dir('openpos-client-libs') { sh """./gradlew -b sonar.gradle \
                         -Dsonar.branch.name="${BRANCH_NAME}" \
+                        -Dsonar.log.level=DEBUG \
                         sonarqube"""}
                 }
             }
