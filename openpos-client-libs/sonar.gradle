@@ -23,5 +23,6 @@ sonarqube {
     property "sonar.typescript.lcov.reportPaths", "./projects/openpos-client-core-lib/build/reports/coverage/report-lcov/lcov.info"
     property "sonar.javascript.lcov.reportPaths", "./projects/openpos-client-core-lib/build/reports/coverage/report-lcov/lcov.info"
     property "sonar.log.level", "DEBUG"
+    property "sonar.verbose", "true"
   }
 }
