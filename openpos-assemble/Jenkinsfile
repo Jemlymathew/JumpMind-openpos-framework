@@ -54,7 +54,7 @@ pipeline {
             }
         }
         stage('Sonar Analysis Client - Branch') {
-            when { branch pattern: "master|releases.*", comparator: "REGEXP"}
+            when { branch pattern: "master", comparator: "REGEXP"}
             steps {
                 withSonarQubeEnv('JumpMindCloud') {
                     dir('openpos-client-libs') { sh """./gradlew -b sonar.gradle \
