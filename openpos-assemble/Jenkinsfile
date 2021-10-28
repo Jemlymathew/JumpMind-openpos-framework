@@ -57,7 +57,7 @@ pipeline {
             when { branch pattern: "master|releases.*", comparator: "REGEXP"}
             steps {
                 withSonarQubeEnv('JumpMindCloud') {
-                    dir('openpos-client-libs') {sh """./gradlew -b sonar.gradle \
+                    dir('openpos-client-libs') { sh """./gradlew -b sonar.gradle \
                         -Dsonar.branch.name="${BRANCH_NAME}" \
                         sonarqube"""}
                 }
