@@ -13,8 +13,13 @@ $loyalty-signup-column-gap: 8px;
     grid-template-areas:
             "header"
             "body";
-    .sale-total-header { grid-area: header; }
-    .sale-total-background { grid-area: body; }
+    .sale-total-header {
+        grid-area: header;
+    }
+    .sale-total-background {
+        overflow-y: unset;
+        grid-area: body;
+    }
 }
 
 .sale-total-header {
