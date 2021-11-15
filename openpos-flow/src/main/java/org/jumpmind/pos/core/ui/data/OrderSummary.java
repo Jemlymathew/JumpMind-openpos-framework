@@ -27,6 +27,7 @@ public class OrderSummary implements Serializable {
     private String amountDue;
     private String itemCountIcon;
     private TimeUnitLabels timeUnitLabels;
+    private String orderTypeCode;
 
     public OrderSummary() {
     }
@@ -34,7 +35,7 @@ public class OrderSummary implements Serializable {
     public OrderSummary(String number, String title, String iconName, OrderCustomer customer, String itemCount, String status, String statusLabel,
                         String statusIcon, Date orderDue, Date orderCreated, String orderTotalLabel, String amountDueLabel,
                         String orderDueLabel, String orderCreatedLabel, String orderDueIcon, String itemCountLabel,
-                        String orderTotal, String amountDue, String itemCountIcon, TimeUnitLabels timeUnitLabels) {
+                        String orderTotal, String amountDue, String itemCountIcon, TimeUnitLabels timeUnitLabels, String orderTypeCode) {
         this.number = number;
         this.title = title;
         this.iconName = iconName;
@@ -55,6 +56,7 @@ public class OrderSummary implements Serializable {
         this.amountDue = amountDue;
         this.itemCountIcon = itemCountIcon;
         this.timeUnitLabels = timeUnitLabels;
+        this.orderTypeCode = orderTypeCode;
     }
 
     public String getNumber() {
@@ -215,6 +217,14 @@ public class OrderSummary implements Serializable {
 
     public void setTimeUnitLabels(TimeUnitLabels timeUnitLabels) {
         this.timeUnitLabels = timeUnitLabels;
+    }
+
+    public String getOrderTypeCode() {
+        return orderTypeCode;
+    }
+
+    public void setOrderTypeCode(String orderTypeCode) {
+        this.orderTypeCode = orderTypeCode;
     }
 }
 
