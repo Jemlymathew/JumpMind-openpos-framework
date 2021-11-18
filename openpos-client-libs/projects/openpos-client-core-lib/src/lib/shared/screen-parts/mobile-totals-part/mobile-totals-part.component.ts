@@ -16,6 +16,7 @@ export class MobileTotalsPartComponent extends ScreenPartComponent<MobileTotalsP
 
     constructor(private injector: Injector) {
         super(injector);
+        localStorage.removeItem('userEmail');
     }
 
     screenDataUpdated() {

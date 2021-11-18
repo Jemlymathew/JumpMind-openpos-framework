@@ -24,6 +24,7 @@ export class SaleTotalPanelComponent extends ScreenPartComponent<SaleTotalPanelI
 
     constructor(injector: Injector, media: OpenposMediaService) {
         super(injector);
+        localStorage.removeItem('userEmail');
         this.isMobile = media.observe(new Map([
             [MediaBreakpoints.MOBILE_PORTRAIT, true],
             [MediaBreakpoints.MOBILE_LANDSCAPE, true],

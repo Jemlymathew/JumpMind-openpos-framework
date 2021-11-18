@@ -22,14 +22,14 @@ export class PromptFormPartComponent extends ScreenPartComponent<PromptFormPartI
     instructions: string;
     inputControlName = 'promptInputControl';
     hiddenInputControlName = 'promptInputHiddenDateControl';
-
+    userEmail:any = localStorage.getItem('userEmail');
     constructor(private validatorsService: ValidatorsService, injector: Injector) {
         super(injector);
     }
 
     screenDataUpdated() {
         this.instructions = this.screenData.instructions;
-
+    
         const group: any = {};
         const validators: ValidatorFn[] = [];
         validators.push(Validators.required);
@@ -49,12 +49,16 @@ export class PromptFormPartComponent extends ScreenPartComponent<PromptFormPartI
             validators.push(Validators.maxLength(this.screenData.maxLength));
         }
 
+        if(this.userEmail && this.screenData.responseType.toString() == 'Email'){
+            this.screenData.responseText = this.userEmail
+        }
+
         if (this.screenData.validationPatterns) {
             for (const validationPattern of this.screenData.validationPatterns) {
                 validators.push(Validators.pattern(validationPattern));
             }
         }
-
+        
         if (this.screenData.max !== null && this.screenData.max !== undefined) {
             validators.push(Validators.max(this.screenData.max));
         }
@@ -94,6 +98,9 @@ export class PromptFormPartComponent extends ScreenPartComponent<PromptFormPartI
             if (this.screenData.actionButton) {
                 this.doAction({action: this.screenData.actionButton.action}, payload);
             }
+            if(this.screenData.responseType.toString() == 'Email'){
+                localStorage.setItem('userEmail', payload);
+            }  
         }
     }
 
