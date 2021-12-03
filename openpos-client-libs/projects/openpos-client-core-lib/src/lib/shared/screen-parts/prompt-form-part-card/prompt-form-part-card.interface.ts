@@ -1,11 +1,11 @@
 import { FieldInputType } from '../../../core/interfaces/field-input-type.enum';
 import { IActionItem } from '../../../core/actions/action-item.interface';
 import { Validator } from '@angular/forms';
-import { PromptPosition } from './prompt-position.enum';
+import { PromptPosition } from './prompt-position-card.enum';
 import { DisplayProperty } from '../../components/display-property/display-property.interface';
 import { ScanInterface } from '../scan-part/scan-part.interface';
 
-export interface PromptFormPartInterface {
+export interface PromptFormPartCardInterface {
     type: string;
     promptIcon: string;
     placeholderText: string;
@@ -32,5 +32,10 @@ export interface PromptFormPartInterface {
     info: DisplayProperty[];
     scan?: ScanInterface;
     autoFocus: boolean;
-    closeScanViewPortOnScan: boolean;
+    hintDateText: string;
+    isExpiryDateEnabled: boolean;
+    todayDate: Date;
+    placeholderDateText: string;
+    responseDateText: string;
+    responseDateType: FieldInputType;
 }

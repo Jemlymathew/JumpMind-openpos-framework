@@ -16,9 +16,9 @@
                                       [validationMessages]="screenData.validationMessages"
                                       [readOnly]="!screenData.editable"
                                       [scanActionName]="screenData.scan?.scanActionName"
-                                      [closeScanViewPortOnScan]="screenData.closeScanViewPortOnScan"
                                       [autoFocus]="autoFocusPrompt">
                     </app-prompt-input>
+                    <input *ngIf="screenData.isExpiryDateEnabled" type="date">
                     <app-instructions *ngIf="instructions" [instructions]="instructions" [instructionsSize]="'text-sm'"></app-instructions>
                     <div #optionsRef>
                         <ng-content select="[optionsScreen]"></ng-content>
@@ -58,12 +58,21 @@
                 <mat-dialog-content class="content" responsive-class>
                     <app-prompt-input #promptInput [placeholderText]="screenData.placeholderText" [responseType]="screenData.responseType ? screenData.responseType.toString() : null"
                                       [promptIcon]="screenData.promptIcon" [responseText]="screenData.responseText" [hintText]="screenData.hintText"
-                                      [minLength]="screenData.minLength" [maxLength]="screenData.maxLength" [closeScanViewPortOnScan]="screenData.closeScanViewPortOnScan" [promptFormGroup]="promptFormGroup"
+                                      [minLength]="screenData.minLength" [maxLength]="screenData.maxLength" [promptFormGroup]="promptFormGroup"
                                       [validationMessages]="screenData.validationMessages"
                                       [keyboardPreference]="screenData.keyboardPreference" [scanEnabled]="screenData.scanEnabled" [readOnly]="!screenData.editable"
                                       [scanActionName]="screenData.scan?.scanActionName"
                                       [autoFocus]="autoFocusPrompt" (valueChange)="onPromptInputChange($event)">
                     </app-prompt-input>
+                        <ng-container>
+                            <app-dynamic-date-form-field *ngIf="screenData.isExpiryDateEnabled" [controlName]="'promptDateInputControl'"
+                                                         [hiddenControl]="'promptDateInputHiddenDateControl'" [form]="promptFormGroup" [type]="screenData.responseDateType ? screenData.responseDateType.toString() : null"
+                                                         [minDate]="today" [(value)]="screenData.responseDateText" [placeholder]="screenData.placeholderDateText" [isPrompt]=true [hintText]="screenData.hintDateText">
+                            </app-dynamic-date-form-field>
+                            <mat-error class="text-sm">
+                                <app-show-errors [control]="promptFormGroup.controls['promptDateInputControl']"></app-show-errors>
+                            </mat-error>
+                        </ng-container>
                     <app-instructions *ngIf="instructions" [instructions]="instructions" [instructionsSize]="'text-sm'"></app-instructions>
                     <div #optionsRef>
                         <ng-content select="[optionsDialog]"></ng-content>
@@ -77,19 +86,19 @@
             </app-content-card>
 
             <mat-dialog-actions *ngIf="screenData.otherActions && screenData.otherActions.length > 0" class="prompt-buttons" responsive-class>
-                <app-secondary-button inputType="button" *ngFor="let menuItem of screenData.otherActions" (click)="onAction(menuItem)">
+                <app-secondary-button [disabled]="!promptFormGroup.valid" inputType="button" *ngFor="let menuItem of screenData.otherActions" (click)="onAction(menuItem)">
                     <span>{{menuItem.title}}</span>
                     <app-icon *ngIf="menuItem.icon" [iconClass]="'md'" [iconName]="menuItem.icon"></app-icon>
                     <div class="muted-color keybind-display-name-secondary" *ngIf="menuItem.keybind && keybindsEnabled()">{{menuItem.keybindDisplayName}}</div>
                 </app-secondary-button>
-                <app-primary-button>
+                <app-primary-button [disabled]="!promptFormGroup.valid">
                     <span>{{screenData.actionButton.title}}</span>
                     <app-icon *ngIf="screenData.actionButton.icon" [iconClass]="'md'" [iconName]="screenData.actionButton.icon"></app-icon>
                     <div class="muted-color keybind-display-name-primary" *ngIf="screenData.actionButton.keybind && keybindsEnabled()">{{screenData.actionButton.keybindDisplayName}}</div>
                 </app-primary-button>
             </mat-dialog-actions>
             <mat-dialog-actions *ngIf="(!screenData.otherActions || screenData.otherActions && screenData.otherActions.length == 0) && screenData.actionButton" align="end">
-                <app-primary-button>
+                <app-primary-button [disabled]="!promptFormGroup.valid">
                     <span>{{screenData.actionButton.title}}</span>
                     <app-icon *ngIf="screenData.actionButton.icon" [iconClass]="'md'" [iconName]="screenData.actionButton.icon"></app-icon>
                     <div class="muted-color keybind-display-name-primary" *ngIf="screenData.actionButton.keybind && keybindsEnabled()">{{screenData.actionButton.keybindDisplayName}}</div>
