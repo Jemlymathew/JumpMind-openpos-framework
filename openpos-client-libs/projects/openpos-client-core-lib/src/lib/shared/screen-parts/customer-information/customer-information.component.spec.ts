@@ -140,49 +140,49 @@ describe('CustomerInformationComponent', () => {
              validateDoesNotExist(fixture, '.account-Number');
          });
 
-          it('displays the customer credit Limit label', () => {
+        it('displays the customer credit Limit label', () => {
               validateText(fixture, '.creditLimit-Label', component.customer.creditLimitLabel);
-          });
+        });
 
-          it('does not display the customer creditLimit  label when the user does not have one', () => {
-              component.customer.creditLimitLabel = undefined;
-              fixture.detectChanges();
+        it('does not display the customer creditLimit  label when the user does not have one', () => {
+            component.customer.creditLimitLabel = undefined;
+            fixture.detectChanges();
 
-              validateDoesNotExist(fixture, '.creditLimit-Label');
-                 });
+            validateDoesNotExist(fixture, '.creditLimit-Label');
+        });
 
-                 it('displays the account credit limit ', () => {
-                     validateText(fixture, '.credit-Limit', component.customer.creditLimit);
-                 });
+        it('displays the account credit limit ', () => {
+            validateText(fixture, '.credit-Limit', component.customer.creditLimit);
+        });
 
-                 it('does not display the account credit limit when the user does not have one', () => {
-                      component.customer.creditLimit = undefined;
-                      fixture.detectChanges();
+        it('does not display the account credit limit when the user does not have one', () => {
+            component.customer.creditLimit = undefined;
+            fixture.detectChanges();
 
-                      validateDoesNotExist(fixture, '.credit-Limit');
-                  });
+            validateDoesNotExist(fixture, '.credit-Limit');
+        });
 
-                 it('displays the account expiry date label', () => {
-                                validateText(fixture, '.expiryDate-Label', component.customer.expiryDateLabel);
-                 });
+        it('displays the account expiry date label', () => {
+            validateText(fixture, '.expiryDate-Label', component.customer.expiryDateLabel);
+        });
 
-                  it('does not display the  account expiry date label when the user does not have one', () => {
-                      component.customer.expiryDateLabel = undefined;
-                      fixture.detectChanges();
+        it('does not display the  account expiry date label when the user does not have one', () => {
+            component.customer.expiryDateLabel = undefined;
+            fixture.detectChanges();
 
-                      validateDoesNotExist(fixture, '.expiryDate-Label');
-                      });
+            validateDoesNotExist(fixture, '.expiryDate-Label');
+        });
 
-                      it('displays the account expiry date ', () => {
-                          validateText(fixture, '.expiry-Date', component.customer.expiryDate);
-                      });
+        it('displays the account expiry date ', () => {
+            validateText(fixture, '.expiry-Date', component.customer.expiryDate);
+        });
 
-                      it('does not display the account expiry date when the user does not have one', () => {
-                       component.customer.expiryDate = undefined;
-                       fixture.detectChanges();
+        it('does not display the account expiry date when the user does not have one', () => {
+            component.customer.expiryDate = undefined;
+            fixture.detectChanges();
 
-                       validateDoesNotExist(fixture, '.expiry-Date');
-                       });
+            validateDoesNotExist(fixture, '.expiry-Date');
+        });
         describe('customer address', () => {
             it('does not display the customer loyalty number when the user does not have one', () => {
                 component.customer.address = undefined;
